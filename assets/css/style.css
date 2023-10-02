@@ -1,0 +1,102 @@
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    scroll-behavior: smooth;
+    font-family: 'Manrope', sans-serif;
+
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+body {
+    background-color: #0e0e0e;
+}
+
+:root {
+    --blank: #1b1b1b;
+    --red: #ec1616;           /* 1 */
+    --light-blue: #28c2ff;    /* 2 */
+    --blue: #145cf7;          /* 3 */
+    --purple: #7925ff;        /* 4 */
+    --yellow: #f0ff17;        /* 5 */
+    --green: #27ff4b;         /* 6 */
+    --orange: #ffa600;        /* 7 */
+}
+
+.container {
+    width: 85vw;
+    max-width: 1140px;
+    height: calc(100vh - 50px);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* GRID */
+
+.grid-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(20, 1fr); /* Adjusted row height for aspect ratio 1:2 */
+    gap: 1px;
+    height: 85%;
+    max-height: 800px;
+    max-width: 100%;
+    aspect-ratio: 1 / 2; 
+}
+
+.grid-item {
+    background-color: var(--blank);
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Aspect ratio of 1:1 for grid items */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+/* COLORS */
+
+.red {
+    background-color: var(--red);
+}
+
+.light-blue {
+    background-color: var(--light-blue);
+}
+
+.blue {
+    background-color: var(--blue);
+}
+
+.purple {
+    background-color: var(--purple);
+}
+
+.yellow {
+    background-color: var(--yellow);
+}
+
+.green {
+    background-color: var(--green);
+}
+
+.orange {
+    background-color: var(--orange);
+}
