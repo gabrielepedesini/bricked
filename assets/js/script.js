@@ -567,8 +567,11 @@ touchArea.addEventListener('touchmove', (event) => {
 });
 
 touchArea.addEventListener('touchend', () => {
-    resetDelayAfterRelease(); // Reset delay when touch is released
-    touchStartY = null; // Reset touchStartY
+
+    setTimeout(() => {
+        resetDelayAfterRelease(); // Reset delay when touch is released
+        touchStartY = null; // Reset touchStartY
+    }, resetDelay/2);
 });
 
 // CONFIRM TETRONIMOS
