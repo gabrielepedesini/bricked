@@ -251,7 +251,7 @@ function checkSpawn(dimension) {
         for(let j = starting; j < starting + dimension; j++) {
 
             if(temp[row][column] !== 0 && matrix[i][j] !== 0) {
-                console.log('uagliu niooooo')
+
                 return false;
             }
 
@@ -351,61 +351,6 @@ function moveLeft() {
 
     return;
 }
-
-// CHECK BUTTONS CLICKED
-
-// let arrowLeftPressed = false;
-// let arrowRightPressed = false;
-
-// document.addEventListener('keydown', (event) => {
-//     if ((event.key === 'ArrowLeft' || event.key === 'a') && !arrowLeftPressed) {
-        
-//         arrowLeftPressed = true;
-//         moveLeft();
-
-//         // Repeat the function call as needed
-//         const repeatInterval = 80; // in milliseconds
-//         const repeatFunction = setInterval(() => {
-//             if (arrowLeftPressed) {
-//                 moveLeft();  // Call your function again
-//             } else {
-//                 clearInterval(repeatFunction);
-//             }
-//         }, repeatInterval);
-//     }
-// });
-
-// document.addEventListener('keydown', (event) => {
-//     if ((event.key === 'ArrowRight' || event.key === 'd') && !arrowRightPressed) {
-
-//         arrowRightPressed = true;
-//         moveRight();  // Call your function here
-        
-//         // Repeat the function call as needed
-//         const repeatInterval = 80; // in milliseconds
-//         const repeatFunction = setInterval(() => {
-//             if (arrowRightPressed) {
-//                 moveRight();  // Call your function again
-//             } else {
-//                 clearInterval(repeatFunction);
-//             }
-//         }, repeatInterval);
-//     }
-// });
-
-// document.addEventListener('keyup', (event) => {
-//     if ((event.key === 'ArrowLeft' || event.key === 'a')) {
-//         arrowLeftPressed = false;
-//     }
-// });
-
-// document.addEventListener('keyup', (event) => {
-//     if (event.key === 'ArrowRight' || event.key === 'd') {
-//         arrowRightPressed = false;
-//     }
-// });
-
-
 
 
 let arrowLeftPressed = false;
@@ -512,11 +457,11 @@ document.addEventListener('keyup', (event) => {
 
 // MOVE DOWN TETRONIMOS
 
-let delay = 800;
+let delay = 500;
 
 function moveDown() {
 
-    let canMove = false;
+    let canMove = true;
 
     for(let i = 19; i >= 0; i--) {
         
@@ -526,15 +471,14 @@ function moveDown() {
                 
                 if(i === 19 || matrix[i+1][j] < 0 ) {
                     canMove = false;
-                    console.log('ciao')
+
+                    confirmPiece();
 
                     return false;
                 }
             }     
         }
     }
-    
-    canMove = true;
 
     if (canMove) {
         
@@ -549,19 +493,103 @@ function moveDown() {
                 }     
             }
         }
-
-    }
+    } 
 
     setTimeout(() => {
-        
         updateGrid();
     }, delay);
 
     return true;
 }
 
-// GAME
+// ACCELERATE MOVE DOWN
 
+let resetDelay;
+let downArrowPressed = false;
+
+// Function to set the delay when the down arrow key is pressed
+function setDelayWhileDownArrowPressed() {
+    if (!downArrowPressed) {
+        resetDelay = delay;
+        delay = 100;
+        downArrowPressed = true;
+    }
+}
+
+// Function to reset the delay when the down arrow key is released
+function resetDelayAfterRelease() {
+    if (downArrowPressed) {
+        delay = resetDelay; // Reset delay to its initial value
+        downArrowPressed = false;
+    }
+}
+
+// Add event listeners for the down arrow key
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+        setDelayWhileDownArrowPressed();
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'ArrowDown') {
+
+        setTimeout(() => {
+            resetDelayAfterRelease();
+        }, resetDelay/2);
+    }
+});
+
+// Add touch event listeners for swipe down and touch release
+let touchStartY = null; // Initialize to null to track the first touch
+
+touchArea.addEventListener('touchstart', (event) => {
+    touchStartY = event.touches[0].clientY;
+    setDelayWhileDownArrowPressed(); // Set delay when touch starts
+    event.preventDefault(); // Prevent scrolling on touch devices
+});
+
+touchArea.addEventListener('touchmove', (event) => {
+    event.preventDefault(); // Prevent scrolling on touch devices
+
+    // Check if touch is still within the screen bounds
+    if (touchStartY !== null) {
+        const touchCurrentY = event.touches[0].clientY;
+        const touchDeltaY = touchCurrentY - touchStartY;
+
+        const threshold = 40;
+
+        // If the finger swipes down, maintain the delay at 200
+        if (touchDeltaY > threshold) {
+            setDelayWhileDownArrowPressed();
+        }
+    }
+});
+
+touchArea.addEventListener('touchend', () => {
+    resetDelayAfterRelease(); // Reset delay when touch is released
+    touchStartY = null; // Reset touchStartY
+});
+
+// CONFIRM TETRONIMOS
+
+function confirmPiece() {
+
+    for(let i = 0; i < 20; i++) {
+        
+        for(let j = 0; j < 10; j++) {
+
+            if(matrix[i][j] > 0) {
+                
+                matrix[i][j] = -matrix[i][j];
+            }     
+        }
+    }
+
+    return;
+}
+
+// GAME
 
 function game() {
 
@@ -574,22 +602,30 @@ function game() {
     if(canSpawn) {
 
         updateGrid();
-        console.log(matrix);
 
+        // Move down
         let canMoveDown = true;
-
+        
         function executeIteration() {
             
             if (canMoveDown) {
+
                 canMoveDown = moveDown();
-        
+                
                 // Restart the loop by recursively calling executeIteration
                 setTimeout(executeIteration, delay + 50);
+
+            } else {
+
+                return game();
+
             }
         }
         executeIteration();
 
     } else {
+
+        confirmPiece();
 
         console.log('GAME OVER')
 
@@ -597,3 +633,115 @@ function game() {
 }
 
 game();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CHECK BUTTONS CLICKED
+
+// let arrowLeftPressed = false;
+// let arrowRightPressed = false;
+
+// document.addEventListener('keydown', (event) => {
+//     if ((event.key === 'ArrowLeft' || event.key === 'a') && !arrowLeftPressed) {
+        
+//         arrowLeftPressed = true;
+//         moveLeft();
+
+//         // Repeat the function call as needed
+//         const repeatInterval = 80; // in milliseconds
+//         const repeatFunction = setInterval(() => {
+//             if (arrowLeftPressed) {
+//                 moveLeft();  // Call your function again
+//             } else {
+//                 clearInterval(repeatFunction);
+//             }
+//         }, repeatInterval);
+//     }
+// });
+
+// document.addEventListener('keydown', (event) => {
+//     if ((event.key === 'ArrowRight' || event.key === 'd') && !arrowRightPressed) {
+
+//         arrowRightPressed = true;
+//         moveRight();  // Call your function here
+        
+//         // Repeat the function call as needed
+//         const repeatInterval = 80; // in milliseconds
+//         const repeatFunction = setInterval(() => {
+//             if (arrowRightPressed) {
+//                 moveRight();  // Call your function again
+//             } else {
+//                 clearInterval(repeatFunction);
+//             }
+//         }, repeatInterval);
+//     }
+// });
+
+// document.addEventListener('keyup', (event) => {
+//     if ((event.key === 'ArrowLeft' || event.key === 'a')) {
+//         arrowLeftPressed = false;
+//     }
+// });
+
+// document.addEventListener('keyup', (event) => {
+//     if (event.key === 'ArrowRight' || event.key === 'd') {
+//         arrowRightPressed = false;
+//     }
+// });
