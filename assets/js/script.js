@@ -386,7 +386,7 @@ touchArea.addEventListener('touchmove', (event) => {
         const touchCurrentX = event.touches[0].clientX;
         const touchDeltaX = touchCurrentX - touchStartX;
 
-        const threshold = 40;
+        const threshold = 30;
 
         if (touchDeltaX < -threshold && !arrowLeftPressed) {
             arrowLeftPressed = true;
@@ -557,7 +557,7 @@ touchArea.addEventListener('touchmove', (event) => {
         const touchCurrentY = event.touches[0].clientY;
         const touchDeltaY = touchCurrentY - touchStartY;
 
-        const threshold = 40;
+        const threshold = 30;
 
         // If the finger swipes down, maintain the delay at 200
         if (touchDeltaY > threshold) {
