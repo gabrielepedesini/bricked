@@ -504,7 +504,7 @@ function moveDown() {
 
 // ACCELERATE MOVE DOWN
 
-let resetDelay;
+let resetDelay = delay;
 let downArrowPressed = false;
 
 // Function to set the delay when the down arrow key is pressed
@@ -592,6 +592,9 @@ function confirmPiece() {
 // GAME
 
 function game() {
+
+    // Reset delay for spawned tetronimos
+    delay = resetDelay;
 
     // Picks the piece
     let dim = pickTetrominos();
