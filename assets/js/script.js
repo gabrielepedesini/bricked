@@ -725,7 +725,7 @@ touchArea.addEventListener('touchmove', (event) => {
             const touchDeltaY = touchCurrentY - touchStartY;
 
             console.log(touchDeltaY)
-            const threshold = 60;
+            const threshold = 50;
 
             // If the finger swipes down, maintain the delay at 200
             if (touchDeltaY > threshold) {
