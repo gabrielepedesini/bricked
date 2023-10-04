@@ -187,12 +187,13 @@ function randomNumber() {
     return randomNumber;
 }
 
+let dim;
+let rotationState;
+
 function pickTetrominos() {
 
     let num = randomNumber();
 
-    let dim;
-    
     switch (num) {
         case 1:
             temp = I;
@@ -237,6 +238,8 @@ function pickTetrominos() {
 }
 
 // CHECK IF CAN SPAWN
+
+let tetrominosPosition; 
 
 function checkSpawn(dimension) {
 
@@ -305,6 +308,8 @@ function moveRight() {
         }
     }
 
+    tetrominosPosition.col++;
+
     updateGrid();
 
     return;
@@ -346,6 +351,8 @@ function moveLeft() {
             }
         }
     }
+
+    tetrominosPosition.col--;
 
     updateGrid();
 
@@ -455,9 +462,133 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
+// ROTATION TETRONIMOS
+
+function checkRotation() {
+
+    if(tetrominosPosition.col > 7 || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
+
+        console.log('cant')
+
+        return false;
+    }
+
+    let row = tetrominosPosition.row;
+    let col = tetrominosPosition.col;
+
+    for (let i = 0; i < dim; i++) {
+
+        col = tetrominosPosition.col;
+
+        for (let j = 0; j < dim; j++) {
+            
+            if(matrix[row][col] < 0) {
+                
+                console.log(row + '  ' + col)
+
+                console.log('cant 3')
+                return false;
+            }
+            col++;
+
+        }
+        row++;
+    }
+
+    return true;
+}
+
+function rotateTetromino() {
+
+    if(checkRotation()) {
+
+        let rotatedPiece = [];
+
+        for (let row = 0; row < dim; row++) {
+            rotatedPiece[row] = [];
+            for (let col = 0; col < dim; col++) {
+                rotatedPiece[row][col] = temp[col][row];
+            }
+        }
+
+        // Reverse rows
+        for (let i = 0; i < dim; i++) {
+            rotatedPiece[i].reverse();
+        }
+
+        // Update the temp array for the next rotation
+        temp = rotatedPiece;
+
+        let row = tetrominosPosition.row;
+        let col = tetrominosPosition.col;
+
+        for (let i = 0; i < dim; i++) {
+
+            for (let j = 0; j < dim; j++) {
+                
+                if (matrix[row + i][col + j] >= 0) {  // Skip confirmed pieces
+                    
+                    matrix[row + i][col + j] = rotatedPiece[i][j];
+                }
+            }
+        } 
+
+        isRotated = true;
+
+        updateGrid();
+        
+        return;
+
+    } else {
+
+        return;
+
+    }
+}
+
+let rotationCooldown = false;
+let touchX;
+let touchY;
+
+document.addEventListener('keydown', (event) => {
+    if ((event.key === 'ArrowUp' || event.key === 'w') && !rotationCooldown) {
+        rotateTetromino();
+        rotationCooldown = true;
+        setTimeout(() => {
+            rotationCooldown = false;
+        }, 300); 
+    }
+});
+
+document.addEventListener('touchstart', (event) => {
+    // Record the touch start coordinates
+    touchX = event.touches[0].clientX;
+    touchY = event.touches[0].clientY;
+});
+
+// Touchend event listener for mobile touch
+document.addEventListener('touchend', (event) => {
+    // Get the touch end coordinates
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
+
+    // Calculate the distance between start and end points
+    const distance = Math.sqrt((touchEndX - touchX) ** 2 + (touchEndY - touchY) ** 2);
+
+    // Check if the touch is a tap (small distance)
+    if (distance < 10 && !rotationCooldown) {  // Adjust the threshold (10 pixels in this example)
+        rotateTetromino();
+        rotationCooldown = true;
+        setTimeout(() => {
+            rotationCooldown = false;
+        }, 300);
+    }
+});
+
 // MOVE DOWN TETRONIMOS
 
 let delay = 500;
+let isRotated;
 
 function moveDown() {
 
@@ -495,9 +626,46 @@ function moveDown() {
         }
     } 
 
+    tetrominosPosition.row++;
+
+    let row = tetrominosPosition.row - 1;
+    let col = tetrominosPosition.col - 1;      
+    
+    if(isRotated) {
+
+        for (let i = 0; i < dim + 2; i++) {
+    
+            for (let j = 0; j < dim + 2; j++) {
+                
+                if(i === 0 || i === dim + 1 || j === 0 || j === dim + 1) {
+    
+                    if(col > 0 && col < 10 && row > 0 && row < 20) {
+    
+                        console.log('entra')
+    
+                        if(matrix[row][col] > 0) {
+                            
+                            console.log('ciao')
+                            matrix[row][col] = 0;
+                        }
+                    }
+                }
+    
+                col++;
+    
+            }
+    
+            row++;
+        }
+
+        isRotated = !isRotated
+    }
+
     setTimeout(() => {
         updateGrid();
     }, delay);
+
+    // console.log(matrix)
 
     return true;
 }
@@ -511,7 +679,7 @@ let downArrowPressed = false;
 function setDelayWhileDownArrowPressed() {
     if (!downArrowPressed) {
         resetDelay = delay;
-        delay = 100;
+        delay = 20;
         downArrowPressed = true;
     }
 }
@@ -534,13 +702,10 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     if (event.key === 'ArrowDown') {
 
-        setTimeout(() => {
-            resetDelayAfterRelease();
-        }, resetDelay/2);
+        resetDelayAfterRelease();
     }
 });
 
-// Add touch event listeners for swipe down and touch release
 let touchStartY = null; // Initialize to null to track the first touch
 
 touchArea.addEventListener('touchstart', (event) => {
@@ -567,12 +732,10 @@ touchArea.addEventListener('touchmove', (event) => {
 });
 
 touchArea.addEventListener('touchend', () => {
-
-    setTimeout(() => {
-        resetDelayAfterRelease(); // Reset delay when touch is released
-        touchStartY = null; // Reset touchStartY
-    }, resetDelay/2);
+    resetDelayAfterRelease(); // Reset delay when touch is released
+    touchStartY = null; // Reset touchStartY
 });
+
 
 // CONFIRM TETRONIMOS
 
@@ -601,6 +764,12 @@ function game() {
 
     // Picks the piece
     let dim = pickTetrominos();
+
+    // Start position of piece
+    tetrominosPosition = { row: 0, col: 3 };
+
+    // State of rotation
+    rotationState = 1;
 
     // Checks if can spawn
     let canSpawn = checkSpawn(dim);
@@ -639,115 +808,3 @@ function game() {
 }
 
 game();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// CHECK BUTTONS CLICKED
-
-// let arrowLeftPressed = false;
-// let arrowRightPressed = false;
-
-// document.addEventListener('keydown', (event) => {
-//     if ((event.key === 'ArrowLeft' || event.key === 'a') && !arrowLeftPressed) {
-        
-//         arrowLeftPressed = true;
-//         moveLeft();
-
-//         // Repeat the function call as needed
-//         const repeatInterval = 80; // in milliseconds
-//         const repeatFunction = setInterval(() => {
-//             if (arrowLeftPressed) {
-//                 moveLeft();  // Call your function again
-//             } else {
-//                 clearInterval(repeatFunction);
-//             }
-//         }, repeatInterval);
-//     }
-// });
-
-// document.addEventListener('keydown', (event) => {
-//     if ((event.key === 'ArrowRight' || event.key === 'd') && !arrowRightPressed) {
-
-//         arrowRightPressed = true;
-//         moveRight();  // Call your function here
-        
-//         // Repeat the function call as needed
-//         const repeatInterval = 80; // in milliseconds
-//         const repeatFunction = setInterval(() => {
-//             if (arrowRightPressed) {
-//                 moveRight();  // Call your function again
-//             } else {
-//                 clearInterval(repeatFunction);
-//             }
-//         }, repeatInterval);
-//     }
-// });
-
-// document.addEventListener('keyup', (event) => {
-//     if ((event.key === 'ArrowLeft' || event.key === 'a')) {
-//         arrowLeftPressed = false;
-//     }
-// });
-
-// document.addEventListener('keyup', (event) => {
-//     if (event.key === 'ArrowRight' || event.key === 'd') {
-//         arrowRightPressed = false;
-//     }
-// });
