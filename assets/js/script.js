@@ -710,23 +710,27 @@ let touchStartY = null; // Initialize to null to track the first touch
 
 touchArea.addEventListener('touchstart', (event) => {
     touchStartY = event.touches[0].clientY;
-    setDelayWhileDownArrowPressed(); // Set delay when touch starts
     event.preventDefault(); // Prevent scrolling on touch devices
 });
 
 touchArea.addEventListener('touchmove', (event) => {
     event.preventDefault(); // Prevent scrolling on touch devices
 
-    // Check if touch is still within the screen bounds
+    // Check if touch is still within the screen bounds and moved downwards
     if (touchStartY !== null) {
         const touchCurrentY = event.touches[0].clientY;
-        const touchDeltaY = touchCurrentY - touchStartY;
 
-        const threshold = 40;
+        // Only update the delay if the finger swipes down (moves towards the bottom of the screen)
+        if (touchCurrentY > touchStartY) {
+            const touchDeltaY = touchCurrentY - touchStartY;
 
-        // If the finger swipes down, maintain the delay at 200
-        if (touchDeltaY > threshold) {
-            setDelayWhileDownArrowPressed();
+            console.log(touchDeltaY)
+            const threshold = 60;
+
+            // If the finger swipes down, maintain the delay at 200
+            if (touchDeltaY > threshold) {
+                setDelayWhileDownArrowPressed();
+            }
         }
     }
 });
