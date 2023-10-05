@@ -468,8 +468,6 @@ function checkRotation() {
 
     if(tetrominosPosition.col > 7 || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
 
-        console.log('cant')
-
         return false;
     }
 
@@ -483,10 +481,7 @@ function checkRotation() {
         for (let j = 0; j < dim; j++) {
             
             if(matrix[row][col] < 0) {
-                
-                console.log(row + '  ' + col)
 
-                console.log('cant 3')
                 return false;
             }
             col++;
@@ -556,7 +551,7 @@ document.addEventListener('keydown', (event) => {
         rotationCooldown = true;
         setTimeout(() => {
             rotationCooldown = false;
-        }, 300); 
+        }, 150); 
     }
 });
 
@@ -581,7 +576,7 @@ document.addEventListener('touchend', (event) => {
         rotationCooldown = true;
         setTimeout(() => {
             rotationCooldown = false;
-        }, 300);
+        }, 150);
     }
 });
 
@@ -641,11 +636,8 @@ function moveDown() {
     
                     if(col > 0 && col < 10 && row > 0 && row < 20) {
     
-                        console.log('entra')
-    
                         if(matrix[row][col] > 0) {
-                            
-                            console.log('ciao')
+
                             matrix[row][col] = 0;
                         }
                     }
@@ -664,8 +656,6 @@ function moveDown() {
     setTimeout(() => {
         updateGrid();
     }, delay);
-
-    // console.log(matrix)
 
     return true;
 }
@@ -724,7 +714,6 @@ touchArea.addEventListener('touchmove', (event) => {
         if (touchCurrentY > touchStartY) {
             const touchDeltaY = touchCurrentY - touchStartY;
 
-            console.log(touchDeltaY)
             const threshold = 50;
 
             // If the finger swipes down, maintain the delay at 200
@@ -759,12 +748,57 @@ function confirmPiece() {
     return;
 }
 
+// CHECK COMPLETED ROWS
+
+function completedRows() {
+
+    let canceled = false;
+    let canceledNum = 0;
+
+    for (let i = matrix.length - 1; i >= 0; i--) {
+        const row = matrix[i];
+        const isCompleted = row.every(element => element < 0);
+
+        if (isCompleted) {
+            matrix.splice(i, 1);
+            canceledNum++;
+            canceled = true;
+        }
+    }
+
+    for (let i = 0; i < canceledNum; i++) {
+        matrix.unshift(Array(matrix[0].length).fill(0));
+    }
+
+    if(canceled) {
+        updateGrid();
+    }
+
+    return true;
+}
+
 // GAME
 
-function game() {
+let numberOfMoves = 0;
 
+function game() {
+    
     // Reset delay for spawned tetronimos
     delay = resetDelay;
+
+    // Accelerate game
+    numberOfMoves++;
+
+    if(numberOfMoves > 10) {
+        numberOfMoves = 1;
+
+        if(delay !== 100) {
+
+            delay = delay - 50;
+        }
+    }
+
+    resetDelay = delay;
 
     // Picks the piece
     let dim = pickTetrominos();
@@ -796,7 +830,10 @@ function game() {
 
             } else {
 
-                return game();
+                if(completedRows()) {
+
+                    return game();
+                }
 
             }
         }
