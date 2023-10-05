@@ -60,42 +60,88 @@ function updateGrid() {
 
                 switch (Math.abs(matrix[i][j])) {
 
-                    case 0:
-                        gridItem.classList.remove('red')
-                        gridItem.classList.add('light-blue')
-                        gridItem.classList.add('blue')
-                        gridItem.classList.add('purple')
-                        gridItem.classList.add('yellow')
-                        gridItem.classList.add('green')
-                        gridItem.classList.add('orange')
-                        break;
-
                     case 1:
                         gridItem.classList.add('red')
+
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 2:
                         gridItem.classList.add('light-blue')
+
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 3:
                         gridItem.classList.add('blue')
+
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 4:
                         gridItem.classList.add('purple')
+                        
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 5:
                         gridItem.classList.add('yellow')
+                        
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 6:
                         gridItem.classList.add('green')
+
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('orange')
+                        gridItem.classList.remove('white')
                         break;
 
                     case 7:
                         gridItem.classList.add('orange')
+
+                        gridItem.classList.remove('red')
+                        gridItem.classList.remove('light-blue')
+                        gridItem.classList.remove('blue')
+                        gridItem.classList.remove('purple')
+                        gridItem.classList.remove('yellow')
+                        gridItem.classList.remove('green')
+                        gridItem.classList.remove('white')
                         break;
 
                     default:
@@ -111,6 +157,7 @@ function updateGrid() {
                 gridItem.classList.remove('yellow')
                 gridItem.classList.remove('green')
                 gridItem.classList.remove('orange')
+                gridItem.classList.remove('white')
             }
 
             itemCounter++;
@@ -763,6 +810,25 @@ function completedRows() {
             matrix.splice(i, 1);
             canceledNum++;
             canceled = true;
+
+            let n = (i * 10) + 1;
+
+            for(let j = 0; j < 10; j++) {
+
+                let gridItem = document.querySelector(`.grid-item[data-number="${n}"]`);
+
+                gridItem.classList.remove('red')
+                gridItem.classList.remove('light-blue')
+                gridItem.classList.remove('blue')
+                gridItem.classList.remove('purple')
+                gridItem.classList.remove('yellow')
+                gridItem.classList.remove('green')
+                gridItem.classList.remove('orange')
+                
+                gridItem.classList.add('white')
+
+                n++;
+            }
         }
     }
 
@@ -771,10 +837,9 @@ function completedRows() {
     }
 
     if(canceled) {
-        updateGrid();
+        
+        return true;
     }
-
-    return true;
 }
 
 // GAME
@@ -792,7 +857,7 @@ function game() {
     if(numberOfMoves > 10) {
         numberOfMoves = 1;
 
-        if(delay !== 100) {
+        if(delay !== 150) {
 
             delay = delay - 50;
         }
@@ -832,7 +897,16 @@ function game() {
 
                 if(completedRows()) {
 
+                    setTimeout(() => {
+                        updateGrid();
+
+                        game();
+                    }, 800);
+
+                } else {
+
                     return game();
+
                 }
 
             }
