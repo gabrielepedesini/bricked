@@ -12,6 +12,8 @@
     -webkit-user-drag: none;
 
     overflow: hidden;
+
+    touch-action: manipulation;
 }
 
 body {
