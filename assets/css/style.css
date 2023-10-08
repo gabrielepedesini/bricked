@@ -385,8 +385,12 @@ footer a {
 
 @media screen and (max-width: 550px) {
 
+    .center {
+        height: 80%;
+    }
+    
     .grid-container {
-        max-height: 380px;
+        max-height: 450px;
     }
 
     .value {
@@ -406,7 +410,20 @@ footer a {
 @media screen and (max-width: 450px) {
 
     .grid-container {
-        max-height: 380px;
+        max-height: 450px;
+    }
+
+    .value {
+        width: 50px;
+    }
+
+    .value-single {
+        width: 120px;
+    }
+
+    .next-piece-container {
+        width: 50px;
+        height: 35px;
     }
 
     .game-container {
