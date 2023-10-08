@@ -519,77 +519,94 @@ function startRepeat(callback) {
 }
 
 // Add touch event listeners for left and right touch movements
-const touchArea = document.querySelector('.container'); // Replace with your touch area element
+const touchArea = document.querySelector('.grid'); // Replace with your touch area element
 let touchStartX = null; // Initialize to null to track the first touch
 
 touchArea.addEventListener('touchstart', (event) => {
-    touchStartX = event.touches[0].clientX;
-    event.preventDefault(); // Prevent scrolling on touch devices
+
+    if(!pause) {
+        touchStartX = event.touches[0].clientX;
+        event.preventDefault(); // Prevent scrolling on touch devices
+    }
 });
 
 touchArea.addEventListener('touchmove', (event) => {
-    event.preventDefault(); // Prevent scrolling on touch devices
 
-    if (touchStartX !== null) {
-        const touchCurrentX = event.touches[0].clientX;
-        const touchDeltaX = touchCurrentX - touchStartX;
+    if(!pause) {
 
-        const threshold = 40;
-
-        if (touchDeltaX < -threshold && !arrowLeftPressed) {
-            arrowLeftPressed = true;
-            arrowRightPressed = false;
-            moveLeft();
-            startRepeat(moveLeft);
-        } else if (touchDeltaX > threshold && !arrowRightPressed) {
-            arrowLeftPressed = false;
-            arrowRightPressed = true;
-            moveRight();
-            startRepeat(moveRight);
+        event.preventDefault(); // Prevent scrolling on touch devices
+    
+        if (touchStartX !== null) {
+            const touchCurrentX = event.touches[0].clientX;
+            const touchDeltaX = touchCurrentX - touchStartX;
+    
+            const threshold = 40;
+    
+            if (touchDeltaX < -threshold && !arrowLeftPressed) {
+                arrowLeftPressed = true;
+                arrowRightPressed = false;
+                moveLeft();
+                startRepeat(moveLeft);
+            } else if (touchDeltaX > threshold && !arrowRightPressed) {
+                arrowLeftPressed = false;
+                arrowRightPressed = true;
+                moveRight();
+                startRepeat(moveRight);
+            }
         }
     }
 });
 
 touchArea.addEventListener('touchend', () => {
-    arrowLeftPressed = false;
-    arrowRightPressed = false;
-    clearInterval(repeatInterval);
-    touchStartX = null; // Reset touchStartX
+
+    if(!pause) {
+        arrowLeftPressed = false;
+        arrowRightPressed = false;
+        clearInterval(repeatInterval);
+        touchStartX = null; // Reset touchStartX
+    }
 });
 
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft' || event.key === 'a') {
-        if (!arrowLeftPressed) {
-            arrowLeftPressed = true;
-            moveLeft();
-            startRepeat(moveLeft);
-        }
-        if (arrowRightPressed) {
-            arrowRightPressed = false;
-            clearInterval(repeatInterval);
-        }
-    }
 
-    if (event.key === 'ArrowRight' || event.key === 'd') {
-        if (!arrowRightPressed) {
-            arrowRightPressed = true;
-            moveRight();
-            startRepeat(moveRight);
+    if(!pause) {
+
+        if (event.key === 'ArrowLeft' || event.key === 'a') {
+            if (!arrowLeftPressed) {
+                arrowLeftPressed = true;
+                moveLeft();
+                startRepeat(moveLeft);
+            }
+            if (arrowRightPressed) {
+                arrowRightPressed = false;
+                clearInterval(repeatInterval);
+            }
         }
-        if (arrowLeftPressed) {
-            arrowLeftPressed = false;
-            clearInterval(repeatInterval);
+    
+        if (event.key === 'ArrowRight' || event.key === 'd') {
+            if (!arrowRightPressed) {
+                arrowRightPressed = true;
+                moveRight();
+                startRepeat(moveRight);
+            }
+            if (arrowLeftPressed) {
+                arrowLeftPressed = false;
+                clearInterval(repeatInterval);
+            }
         }
     }
 });
 
 document.addEventListener('keyup', (event) => {
     if (event.key === 'ArrowLeft' || event.key === 'a') {
-        arrowLeftPressed = false;
-        if (arrowRightPressed) {
-            startRepeat(moveRight);
-        } else {
-            clearInterval(repeatInterval);
+
+        if(!pause) {
+            arrowLeftPressed = false;
+            if (arrowRightPressed) {
+                startRepeat(moveRight);
+            } else {
+                clearInterval(repeatInterval);
+            }
         }
     }
 
@@ -688,36 +705,45 @@ let touchY;
 
 document.addEventListener('keydown', (event) => {
     if ((event.key === 'ArrowUp' || event.key === 'w') && !rotationCooldown) {
-        rotateTetromino();
-        rotationCooldown = true;
-        setTimeout(() => {
-            rotationCooldown = false;
-        }, 100); 
+
+        if(!pause) {
+            rotateTetromino();
+            rotationCooldown = true;
+            setTimeout(() => {
+                rotationCooldown = false;
+            }, 100); 
+        }
     }
 });
 
-document.addEventListener('touchstart', (event) => {
-    // Record the touch start coordinates
-    touchX = event.touches[0].clientX;
-    touchY = event.touches[0].clientY;
+touchArea.addEventListener('touchstart', (event) => {
+
+    if(!pause) {
+        // Record the touch start coordinates
+        touchX = event.touches[0].clientX;
+        touchY = event.touches[0].clientY;
+    }
 });
 
 // Touchend event listener for mobile touch
-document.addEventListener('touchend', (event) => {
-    // Get the touch end coordinates
-    const touchEndX = event.changedTouches[0].clientX;
-    const touchEndY = event.changedTouches[0].clientY;
+touchArea.addEventListener('touchend', (event) => {
 
-    // Calculate the distance between start and end points
-    const distance = Math.sqrt((touchEndX - touchX) ** 2 + (touchEndY - touchY) ** 2);
-
-    // Check if the touch is a tap (small distance)
-    if (distance < 10 && !rotationCooldown) {  // Adjust the threshold (10 pixels in this example)
-        rotateTetromino();
-        rotationCooldown = true;
-        setTimeout(() => {
-            rotationCooldown = false;
-        }, 100);
+    if(!pause) {
+        // Get the touch end coordinates
+        const touchEndX = event.changedTouches[0].clientX;
+        const touchEndY = event.changedTouches[0].clientY;
+    
+        // Calculate the distance between start and end points
+        const distance = Math.sqrt((touchEndX - touchX) ** 2 + (touchEndY - touchY) ** 2);
+    
+        // Check if the touch is a tap (small distance)
+        if (distance < 10 && !rotationCooldown) {  // Adjust the threshold (10 pixels in this example)
+            rotateTetromino();
+            rotationCooldown = true;
+            setTimeout(() => {
+                rotationCooldown = false;
+            }, 100);
+        }
     }
 });
 
@@ -834,48 +860,64 @@ function resetDelayAfterRelease() {
 // Add event listeners for the down arrow key
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowDown') {
-        setDelayWhileDownArrowPressed();
+
+        if(!pause) {
+            setDelayWhileDownArrowPressed();
+        }
     }
 });
 
 document.addEventListener('keyup', (event) => {
     if (event.key === 'ArrowDown') {
 
-        resetDelayAfterRelease();
+        if(!pause) {
+            resetDelayAfterRelease();
+        }
     }
 });
 
 let touchStartY = null; // Initialize to null to track the first touch
 
 touchArea.addEventListener('touchstart', (event) => {
-    touchStartY = event.touches[0].clientY;
-    event.preventDefault(); // Prevent scrolling on touch devices
+
+    if(!pause) {
+
+        touchStartY = event.touches[0].clientY;
+        event.preventDefault(); // Prevent scrolling on touch devices
+    }
 });
 
 touchArea.addEventListener('touchmove', (event) => {
-    event.preventDefault(); // Prevent scrolling on touch devices
 
-    // Check if touch is still within the screen bounds and moved downwards
-    if (touchStartY !== null) {
-        const touchCurrentY = event.touches[0].clientY;
+    if(!pause) {
 
-        // Only update the delay if the finger swipes down (moves towards the bottom of the screen)
-        if (touchCurrentY > touchStartY) {
-            const touchDeltaY = touchCurrentY - touchStartY;
-
-            const threshold = 50;
-
-            // If the finger swipes down, maintain the delay at 200
-            if (touchDeltaY > threshold) {
-                setDelayWhileDownArrowPressed();
+        event.preventDefault(); // Prevent scrolling on touch devices
+    
+        // Check if touch is still within the screen bounds and moved downwards
+        if (touchStartY !== null) {
+            const touchCurrentY = event.touches[0].clientY;
+    
+            // Only update the delay if the finger swipes down (moves towards the bottom of the screen)
+            if (touchCurrentY > touchStartY) {
+                const touchDeltaY = touchCurrentY - touchStartY;
+    
+                const threshold = 50;
+    
+                // If the finger swipes down, maintain the delay at 200
+                if (touchDeltaY > threshold) {
+                    setDelayWhileDownArrowPressed();
+                }
             }
         }
     }
 });
 
 touchArea.addEventListener('touchend', () => {
-    resetDelayAfterRelease(); // Reset delay when touch is released
-    touchStartY = null; // Reset touchStartY
+
+    if(!pause) {
+        resetDelayAfterRelease(); // Reset delay when touch is released
+        touchStartY = null; // Reset touchStartY
+    }
 });
 
 
@@ -969,6 +1011,10 @@ function completedRows() {
 
 // GAME
 
+let pause = false;
+
+let gameRestarted = false;
+
 let score = 0;
 let lines = 0;
 let level = 1;
@@ -1019,10 +1065,17 @@ function game() {
         let canMoveDown = true;
         
         function executeIteration() {
+
+            if(gameRestarted) {
+                gameRestarted = false;
+                return;
+            }
             
             if (canMoveDown) {
 
-                canMoveDown = moveDown();
+                if(!pause) {
+                    canMoveDown = moveDown();
+                }
                 
                 // Restart the loop by recursively calling executeIteration
                 setTimeout(executeIteration, delay + 30);
@@ -1060,3 +1113,98 @@ function game() {
 }
 
 game();
+
+// PAUSE
+
+let pauseBtn = document.querySelector('.pause');
+
+pauseBtn.addEventListener('click', () => {
+
+    pause = true;
+
+    const pauseContainer = document.querySelector('.pause-container');
+    const pauseModal = document.querySelector('.pause-modal');
+    
+    pauseModal.classList.remove('slide-out-down');
+    pauseModal.classList.add('slide-in-up');
+    pauseContainer.style.display = 'flex';
+});
+
+let resumeBtn = document.querySelector('.resume');
+
+resumeBtn.addEventListener('click', () => {
+
+    pause = false;
+
+    const pauseContainer = document.querySelector('.pause-container');
+    const pauseModal = document.querySelector('.pause-modal');
+    
+    pauseModal.classList.remove('slide-in-up');
+    pauseModal.classList.add('slide-out-down');
+
+    setTimeout(() => {
+        pauseContainer.style.display = 'none';
+    }, 500);
+});
+
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        pause = true;
+
+        const pauseContainer = document.querySelector('.pause-container');
+        const pauseModal = document.querySelector('.pause-modal');
+        
+        pauseModal.classList.remove('slide-out-down');
+        pauseModal.classList.add('slide-in-up');
+        pauseContainer.style.display = 'flex';
+    } 
+});
+
+// RESET
+
+function resetGame() {
+    // Reset game state variables to their initial values
+    score = 0;
+    lines = 0;
+    level = 1;
+    delay = 600;
+
+    // Reset recentNumbers
+    recentNumbers = [];
+
+    // Clear the grid
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(item => item.classList.remove('red', 'light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white'));
+
+    // Reinitialize the matrix and update the grid
+    matrix = createMatrix();
+    updateGrid();
+
+    // Update the HTML labels
+    scoreText.innerHTML = score;
+    scoreTextMin.innerHTML = score;
+    linesText.innerHTML = lines;
+    levelText.innerHTML = level;
+
+    gameRestarted = true;
+
+    pause = false;
+
+    const pauseContainer = document.querySelector('.pause-container');
+    const pauseModal = document.querySelector('.pause-modal');
+    
+    pauseModal.classList.remove('slide-in-up');
+    pauseModal.classList.add('slide-out-down');
+
+    setTimeout(() => {
+        pauseContainer.style.display = 'none';
+    }, 500);
+    
+    // Start a new game
+    game();
+
+}
+
+const resetBtn = document.querySelector('.restart');
+resetBtn.addEventListener('click', resetGame);
