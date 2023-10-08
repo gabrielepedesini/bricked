@@ -63,85 +63,43 @@ function updateGrid() {
                     case 1:
                         gridItem.classList.add('red')
 
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white')
                         break;
 
                     case 2:
                         gridItem.classList.add('light-blue')
 
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+                        gridItem.classList.remove('blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red')
                         break;
 
                     case 3:
                         gridItem.classList.add('blue')
 
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+                        gridItem.classList.remove('light-blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red')
                         break;
 
                     case 4:
                         gridItem.classList.add('purple')
-                        
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+
+                        gridItem.classList.remove('light-blue', 'blue', 'yellow', 'green', 'orange', 'white', 'red')
                         break;
 
                     case 5:
                         gridItem.classList.add('yellow')
-                        
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'green', 'orange', 'white', 'red')
                         break;
 
                     case 6:
                         gridItem.classList.add('green')
 
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('orange')
-                        gridItem.classList.remove('white')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'orange', 'white', 'red')
                         break;
 
                     case 7:
                         gridItem.classList.add('orange')
 
-                        gridItem.classList.remove('red')
-                        gridItem.classList.remove('light-blue')
-                        gridItem.classList.remove('blue')
-                        gridItem.classList.remove('purple')
-                        gridItem.classList.remove('yellow')
-                        gridItem.classList.remove('green')
-                        gridItem.classList.remove('white')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'white', 'red')
                         break;
 
                     default:
@@ -150,14 +108,7 @@ function updateGrid() {
             }
 
             if(matrix[i][j] === 0) {
-                gridItem.classList.remove('red')
-                gridItem.classList.remove('light-blue')
-                gridItem.classList.remove('blue')
-                gridItem.classList.remove('purple')
-                gridItem.classList.remove('yellow')
-                gridItem.classList.remove('green')
-                gridItem.classList.remove('orange')
-                gridItem.classList.remove('white')
+                gridItem.classList.remove('red', 'light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white');
             }
 
             itemCounter++;
@@ -216,6 +167,8 @@ const Z = [
 let recentNumbers = [];
 const min = 1;
 const max = 7;
+let currentPiece;
+let nextPiece;
 let temp;
 
 function randomNumber() {
@@ -238,10 +191,17 @@ let dim;
 let rotationState;
 
 function pickTetrominos() {
+    
+    if (nextPiece === undefined) {
+        nextPiece = generateNextPiece();
+    }
 
-    let num = randomNumber();
+    currentPiece = nextPiece;
+    nextPiece = generateNextPiece();
 
-    switch (num) {
+    nextPieceViewer();
+
+    switch (currentPiece) {
         case 1:
             temp = I;
             dim = 4;
@@ -282,6 +242,140 @@ function pickTetrominos() {
     }
 
     return dim;
+}
+
+function generateNextPiece() {
+
+    let num = randomNumber();
+    return num;
+}
+
+// NEXT PIECE
+
+let tempViewer;
+let dimViewer;
+let colorViewer;
+
+function nextPieceViewer() {
+
+    switch (nextPiece) {
+        case 1:
+            tempViewer = I;
+            dimViewer = 4;
+            colorViewer = 'light-blue';
+            break;
+
+        case 2:
+            tempViewer = J;
+            dimViewer = 3;
+            colorViewer = 'blue';
+            break;
+
+        case 3:
+            tempViewer = L;
+            dimViewer = 3;
+            colorViewer = 'orange';
+            break;
+
+        case 4:
+            tempViewer = O;
+            dimViewer = 2;
+            colorViewer = 'yellow';
+            break;
+
+        case 5:
+            tempViewer = S;
+            dimViewer = 3;
+            colorViewer = 'green';
+            break;
+
+        case 6:
+            tempViewer = T;
+            dimViewer = 3;
+            colorViewer = 'purple';
+            break;
+
+        case 7:
+            tempViewer = Z;
+            dimViewer = 3;
+            colorViewer = 'red';
+            break;
+
+        default:
+            break;
+    }
+
+    const gridDiv = document.querySelector('.grid-next');
+
+    while (gridDiv.firstChild) {
+        gridDiv.removeChild(gridDiv.firstChild);
+    }
+
+    if(dimViewer === 2) {
+
+        gridDiv.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        gridDiv.style.gridTemplateRows = 'repeat(2, 1fr)';
+        gridDiv.style.width = '33.3%';
+
+        for(let i = 0; i < dimViewer; i++) {
+
+            for(let j = 0; j < dimViewer; j++) {
+
+                const elementDiv = document.createElement('div');
+                elementDiv.classList.add('grid-next-item')
+                
+                if(tempViewer[i][j] !== 0) {
+                    elementDiv.classList.add(colorViewer)
+                }
+
+                gridDiv.appendChild(elementDiv);
+            }
+        }
+    }
+
+    if(dimViewer === 3) {
+
+        gridDiv.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        gridDiv.style.gridTemplateRows = 'repeat(2, 1fr)';
+        gridDiv.style.width = '50%';
+
+        for(let i = 0; i < dimViewer - 1; i++) {
+
+            for(let j = 0; j < dimViewer; j++) {
+
+                const elementDiv = document.createElement('div');
+                elementDiv.classList.add('grid-next-item')
+                
+                if(tempViewer[i][j] !== 0) {
+                    elementDiv.classList.add(colorViewer)
+                }
+
+                gridDiv.appendChild(elementDiv);
+            }
+        }
+    }
+
+    if(dimViewer === 4) {
+
+        gridDiv.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        gridDiv.style.gridTemplateRows = 'repeat(1, 1fr)';
+        gridDiv.style.width = '66.6%';
+
+        for(let i = 1; i < dimViewer - 2; i++) {
+
+            for(let j = 0; j < dimViewer; j++) {
+
+                const elementDiv = document.createElement('div');
+                elementDiv.classList.add('grid-next-item')
+                
+                if(tempViewer[i][j] !== 0) {
+                    elementDiv.classList.add(colorViewer)
+                }
+
+                gridDiv.appendChild(elementDiv);
+            }
+        }
+    }
 }
 
 // CHECK IF CAN SPAWN
@@ -598,7 +692,7 @@ document.addEventListener('keydown', (event) => {
         rotationCooldown = true;
         setTimeout(() => {
             rotationCooldown = false;
-        }, 150); 
+        }, 100); 
     }
 });
 
@@ -623,13 +717,13 @@ document.addEventListener('touchend', (event) => {
         rotationCooldown = true;
         setTimeout(() => {
             rotationCooldown = false;
-        }, 150);
+        }, 100);
     }
 });
 
 // MOVE DOWN TETRONIMOS
 
-let delay = 500;
+let delay = 600;
 let isRotated;
 
 function moveDown() {
@@ -700,8 +794,16 @@ function moveDown() {
         isRotated = !isRotated
     }
 
+    if(delay === 10) {
+        score++;
+    }
+
     setTimeout(() => {
         updateGrid();
+
+        scoreText.innerHTML = score;
+        scoreTextMin.innerHTML = score;
+
     }, delay);
 
     return true;
@@ -716,7 +818,7 @@ let downArrowPressed = false;
 function setDelayWhileDownArrowPressed() {
     if (!downArrowPressed) {
         resetDelay = delay;
-        delay = 20;
+        delay = 10;
         downArrowPressed = true;
     }
 }
@@ -834,7 +936,30 @@ function completedRows() {
 
     for (let i = 0; i < canceledNum; i++) {
         matrix.unshift(Array(matrix[0].length).fill(0));
+
+        lines++;
     }
+
+    switch (canceledNum) {
+
+        case 1:
+            score += 40 * (level)	
+            break;
+
+        case 2:
+            score += 100 * (level)	
+            break;
+
+        case 3:
+            score += 300 * (level)	
+            break;
+
+        case 4:
+            score += 1200 * (level)	
+            break;
+    }
+
+    linesText.innerHTML = lines;
 
     if(canceled) {
         
@@ -844,26 +969,35 @@ function completedRows() {
 
 // GAME
 
-let numberOfMoves = 0;
+let score = 0;
+let lines = 0;
+let level = 1;
+
+let scoreText = document.getElementById('score-text');
+let scoreTextMin = document.getElementById('score-text-min');
+let linesText = document.getElementById('lines-text');
+let levelText = document.getElementById('level-text');
+
+scoreText.innerHTML = score;
+scoreTextMin.innerHTML = score;
+linesText.innerHTML = lines;
+levelText.innerHTML = level;
 
 function game() {
     
     // Reset delay for spawned tetronimos
     delay = resetDelay;
 
-    // Accelerate game
-    numberOfMoves++;
+    // New level
+    if(lines >= 10 * level && level !== 10) {
 
-    if(numberOfMoves > 10) {
-        numberOfMoves = 1;
-
-        if(delay !== 150) {
-
-            delay = delay - 50;
-        }
+        level++;
+        delay = delay - 50;
     }
 
     resetDelay = delay;
+
+    levelText.innerHTML = level;
 
     // Picks the piece
     let dim = pickTetrominos();
@@ -891,7 +1025,7 @@ function game() {
                 canMoveDown = moveDown();
                 
                 // Restart the loop by recursively calling executeIteration
-                setTimeout(executeIteration, delay + 50);
+                setTimeout(executeIteration, delay + 25);
 
             } else {
 
@@ -900,8 +1034,11 @@ function game() {
                     setTimeout(() => {
                         updateGrid();
 
+                        scoreText.innerHTML = score;
+                        scoreTextMin.innerHTML = score;
+
                         game();
-                    }, 800);
+                    }, 1250);
 
                 } else {
 
