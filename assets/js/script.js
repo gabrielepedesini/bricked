@@ -1025,7 +1025,7 @@ function game() {
                 canMoveDown = moveDown();
                 
                 // Restart the loop by recursively calling executeIteration
-                setTimeout(executeIteration, delay + 25);
+                setTimeout(executeIteration, delay + 30);
 
             } else {
 
