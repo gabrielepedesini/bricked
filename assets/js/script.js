@@ -1310,9 +1310,13 @@ playBtn.addEventListener('click', () => {
     gameStarted = true;
 
     const homeContainer = document.querySelector('.home-page');
+    const homeContainerInner = document.querySelector('.home-container');
 
     homeContainer.style.transition = '0.7s';
     homeContainer.style.bottom = '100%';
+
+    homeContainerInner.style.transition = '0.7s';
+    homeContainerInner.style.bottom = '100%';
 
     setTimeout(() => {
 
