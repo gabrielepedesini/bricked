@@ -67,6 +67,7 @@ body {
     background-color: #070707;
 
     position: fixed;
+    bottom: 80px;
 
     z-index: 20;
 
