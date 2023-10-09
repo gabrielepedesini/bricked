@@ -61,7 +61,7 @@ body {
 }
 
 .home-container {
-    height: calc(100vh - 80px);
+    height: calc(100% - 80px);
     width: 100vw;
 
     background-color: #070707;
