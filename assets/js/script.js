@@ -820,15 +820,15 @@ function moveDown() {
         isRotated = !isRotated
     }
 
-    if(delay === 10) {
+    if(delay === 30) {
         score++;
     }
 
     setTimeout(() => {
         updateGrid();
 
-        scoreText.innerHTML = score;
-        scoreTextMin.innerHTML = score;
+        scoreText.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
+        scoreTextMin.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
 
     }, delay);
 
@@ -844,7 +844,7 @@ let downArrowPressed = false;
 function setDelayWhileDownArrowPressed() {
     if (!downArrowPressed) {
         resetDelay = delay;
-        delay = 10;
+        delay = 30;
         downArrowPressed = true;
     }
 }
@@ -982,30 +982,91 @@ function completedRows() {
         lines++;
     }
 
+    const pointsAlert = document.querySelector('.points');
+
     switch (canceledNum) {
 
         case 1:
-            score += 40 * (level)	
+            score += 40 * (level)
+            pointsAlert.innerHTML = '<span>SINGLE</span> +' + (40 * (level))
+
             break;
 
         case 2:
             score += 100 * (level)	
+            pointsAlert.innerHTML = '<span>DOUBLE</span> +' + (100 * (level))
+
             break;
 
         case 3:
             score += 300 * (level)	
+            pointsAlert.innerHTML = '<span>TRIPLE</span> +' + (300 * (level))
+
             break;
 
         case 4:
             score += 1200 * (level)	
+            pointsAlert.innerHTML = '<span>MULTIPLE</span> +' + (1200 * (level))
+
             break;
     }
 
     linesText.innerHTML = lines;
 
     if(canceled) {
+
+        pointsAlert.style.bottom = '-40px';
         
         return true;
+    }
+}
+
+// CHECK SCOREBOARD
+
+let scoreboard;
+
+function checkScoreboard() {
+
+    scoreboard = JSON.parse(localStorage.getItem('myScoreboard'));
+
+    if(scoreboard === null) {
+
+        scoreboard = [5000, 4000, 3000, 2000, 1000];
+
+        localStorage.setItem('myScoreboard', JSON.stringify(scoreboard));
+    }
+
+    for(let i = 0; i < 5; i++) {
+
+        if(score > scoreboard[i]) {
+
+            scoreboard.splice(i, 0, score);
+            scoreboard.pop();
+            break;
+        }
+    }
+
+    localStorage.setItem('myScoreboard', JSON.stringify(scoreboard));
+}
+
+// UPDATE SCOREBOARD
+
+function updateScoreboard() {
+
+    let num = 1;
+
+    for(let i = 0; i < 5; i++) {
+
+        const selectedDiv = document.querySelector(`.scoreboard div[data-number="${num}"]`);
+
+        selectedDiv.innerHTML = scoreboard[i].toLocaleString('en-US', { useGrouping: true });
+
+        if(scoreboard[i] === score) {
+
+            selectedDiv.style.backgroundColor = '#5f5f5f';
+        }
+        
+        num++;
     }
 }
 
@@ -1024,8 +1085,8 @@ let scoreTextMin = document.getElementById('score-text-min');
 let linesText = document.getElementById('lines-text');
 let levelText = document.getElementById('level-text');
 
-scoreText.innerHTML = score;
-scoreTextMin.innerHTML = score;
+scoreText.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
+scoreTextMin.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
 linesText.innerHTML = lines;
 levelText.innerHTML = level;
 
@@ -1078,7 +1139,7 @@ function game() {
                 }
                 
                 // Restart the loop by recursively calling executeIteration
-                setTimeout(executeIteration, delay + 30);
+                setTimeout(executeIteration, delay + 10);
 
             } else {
 
@@ -1087,8 +1148,11 @@ function game() {
                     setTimeout(() => {
                         updateGrid();
 
-                        scoreText.innerHTML = score;
-                        scoreTextMin.innerHTML = score;
+                        scoreText.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
+                        scoreTextMin.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
+
+                        const pointsAlert = document.querySelector('.points');
+                        pointsAlert.style.bottom = '30px';
 
                         game();
                     }, 1250);
@@ -1107,12 +1171,20 @@ function game() {
 
         confirmPiece();
 
-        console.log('GAME OVER')
+        checkScoreboard();
 
+        updateScoreboard();
+
+        const gameOverContainer = document.querySelector('.game-over-container');
+        const gameOverModal = document.querySelector('.game-over-modal');
+        
+        gameOverModal.classList.remove('slide-out-down');
+        gameOverModal.classList.add('slide-in-up');
+        gameOverContainer.style.display = 'flex';
+
+        return;
     }
 }
-
-game();
 
 // PAUSE
 
@@ -1161,9 +1233,10 @@ document.addEventListener('visibilitychange', () => {
     } 
 });
 
-// RESET
+// RESET GAME
 
-function resetGame() {
+function initializeGame(isRestart = false) {
+
     // Reset game state variables to their initial values
     score = 0;
     lines = 0;
@@ -1182,12 +1255,10 @@ function resetGame() {
     updateGrid();
 
     // Update the HTML labels
-    scoreText.innerHTML = score;
-    scoreTextMin.innerHTML = score;
+    scoreText.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
+    scoreTextMin.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
     linesText.innerHTML = lines;
     levelText.innerHTML = level;
-
-    gameRestarted = true;
 
     pause = false;
 
@@ -1200,11 +1271,46 @@ function resetGame() {
     setTimeout(() => {
         pauseContainer.style.display = 'none';
     }, 500);
-    
-    // Start a new game
-    game();
 
+    const gameOverContainer = document.querySelector('.game-over-container');
+    const gameOverModal = document.querySelector('.game-over-modal');
+    
+    gameOverModal.classList.remove('slide-in-up');
+    gameOverModal.classList.add('slide-out-down');
+
+    setTimeout(() => {
+        gameOverContainer.style.display = 'none';
+    }, 500);
+    
+    // Start a new game if it's not a restart
+    if (!isRestart) {
+        gameRestarted = true;
+    } else {
+        gameRestarted = false;
+    }
+
+    game();
 }
 
 const resetBtn = document.querySelector('.restart');
-resetBtn.addEventListener('click', resetGame);
+resetBtn.addEventListener('click', () => initializeGame());
+
+const restartBtn = document.querySelector('.restart-game');
+restartBtn.addEventListener('click', () => initializeGame(true));
+
+// START GAME
+
+const playBtn = document.querySelector('.play');
+playBtn.addEventListener('click', () => {
+
+    const homeContainer = document.querySelector('.home-page');
+
+    homeContainer.style.transition = '0.7s';
+    homeContainer.style.bottom = '100%';
+
+    setTimeout(() => {
+
+        game();
+
+    }, 250);
+});
