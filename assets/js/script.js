@@ -1074,6 +1074,10 @@ function updateScoreboard() {
 
 let pause = false;
 
+// In home?
+let gameStarted = false;
+
+// After resume?
 let gameRestarted = false;
 
 let score = 0;
@@ -1221,7 +1225,7 @@ resumeBtn.addEventListener('click', () => {
 
 
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
+    if (document.hidden && gameStarted === true) {
         pause = true;
 
         const pauseContainer = document.querySelector('.pause-container');
@@ -1302,6 +1306,8 @@ restartBtn.addEventListener('click', () => initializeGame(true));
 
 const playBtn = document.querySelector('.play');
 playBtn.addEventListener('click', () => {
+
+    gameStarted = true;
 
     const homeContainer = document.querySelector('.home-page');
 
