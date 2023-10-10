@@ -1237,6 +1237,34 @@ document.addEventListener('visibilitychange', () => {
     } 
 });
 
+// SCREEN HEIGHT CHECKER
+
+const blockElement = document.querySelector('.block-view');
+
+let previousDisplay = window.getComputedStyle(blockElement).display;
+
+const checkDisplayChange = () => {
+  const currentDisplay = window.getComputedStyle(blockElement).display;
+
+  if (currentDisplay !== previousDisplay) {
+    // Display property has changed
+    if (currentDisplay === 'flex' && gameStarted === true) {
+      
+        pause = true;
+
+        const pauseContainer = document.querySelector('.pause-container');
+        const pauseModal = document.querySelector('.pause-modal');
+        
+        pauseModal.classList.remove('slide-out-down');
+        pauseModal.classList.add('slide-in-up');
+        pauseContainer.style.display = 'flex';
+    }
+    previousDisplay = currentDisplay;
+  }
+};
+
+const checkInterval = setInterval(checkDisplayChange, 100); 
+
 // RESET GAME
 
 function initializeGame(isRestart = false) {
