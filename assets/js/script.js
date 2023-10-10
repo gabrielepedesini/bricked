@@ -540,7 +540,7 @@ touchArea.addEventListener('touchmove', (event) => {
             const touchCurrentX = event.touches[0].clientX;
             const touchDeltaX = touchCurrentX - touchStartX;
     
-            const threshold = 40;
+            const threshold = 30;
     
             if (touchDeltaX < -threshold && !arrowLeftPressed) {
                 arrowLeftPressed = true;
