@@ -821,7 +821,7 @@ function moveDown() {
     }
 
     if(delay === 30) {
-        score++;
+        score += 1 * level;
     }
 
     setTimeout(() => {
@@ -859,7 +859,7 @@ function resetDelayAfterRelease() {
 
 // Add event listeners for the down arrow key
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowDown') {
+    if (event.key === 'ArrowDown' || event.key === 's') {
 
         if(!pause) {
             setDelayWhileDownArrowPressed();
@@ -868,7 +868,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowDown') {
+    if (event.key === 'ArrowDown' || event.key === 's') {
 
         if(!pause) {
             resetDelayAfterRelease();
@@ -1236,6 +1236,40 @@ document.addEventListener('visibilitychange', () => {
         pauseContainer.style.display = 'flex';
     } 
 });
+
+// HOW TO PLAY
+
+const howToPlayBtn = document.querySelector('.how-to-play');
+const howToPlayContainer = document.querySelector('.how-to-play-container');
+
+howToPlayBtn.addEventListener('click', () => {
+    
+    howToPlayContainer.style.display = 'flex';
+})
+
+const doneBtn1 = document.getElementById('done-how-to-play');
+
+doneBtn1.addEventListener('click', () => {
+    
+    howToPlayContainer.style.display = 'none';
+})
+
+// CONTROLS
+
+const controlsBtn = document.querySelector('.controls');
+const controlsContainer = document.querySelector('.controls-container');
+
+controlsBtn.addEventListener('click', () => {
+    
+    controlsContainer.style.display = 'flex';
+})
+
+const doneBtn2 = document.getElementById('done-controls');
+
+doneBtn2.addEventListener('click', () => {
+    
+    controlsContainer.style.display = 'none';
+})
 
 // SCREEN HEIGHT CHECKER
 
