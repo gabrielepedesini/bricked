@@ -1,0 +1,7 @@
+{
+    "name": "Minimal Tris",
+    "short_name": "Minimal Tris",
+    "theme_color": "#fcfcfc",
+    "background_color": "#fcfcfc",
+    "display": "standalone"
+}
