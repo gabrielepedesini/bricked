@@ -624,7 +624,7 @@ document.addEventListener('keyup', (event) => {
 
 function checkRotation() {
 
-    if(tetrominosPosition.col > 7 || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
+    if(tetrominosPosition.col > 10 - dim || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
 
         return false;
     }
@@ -1143,7 +1143,7 @@ function game() {
                 }
                 
                 // Restart the loop by recursively calling executeIteration
-                setTimeout(executeIteration, delay + 10);
+                setTimeout(executeIteration, delay + 5);
 
             } else {
 
