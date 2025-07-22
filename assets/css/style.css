@@ -31,6 +31,7 @@ body {
     --yellow: #f4f200;        /* 5 */
     --green: #00f400;         /* 6 */
     --orange: #f57000;        /* 7 */
+    --shadow: #464646;
 }
 
 .container {
@@ -874,6 +875,12 @@ body {
     background-color: var(--orange);
 
     border: 2px solid #bc5400;
+}
+
+.shadow {
+    background-color: var(--shadow);
+
+    border: 2px solid #444444;
 }
 
 .white {

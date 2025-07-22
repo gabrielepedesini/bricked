@@ -4,7 +4,6 @@ const gridContainer = document.getElementById('grid');
 let gridCreated = false;
 
 function createGrid() {
-
     for(let i = 1; i <= 200; i++) {
         const div = document.createElement('div');
         div.classList.add('grid-item');
@@ -15,7 +14,7 @@ function createGrid() {
     }
 }
 
-if(!gridCreated) {
+if (!gridCreated) {
     createGrid();
 }
 
@@ -25,13 +24,12 @@ let matrix = [];
 matrixCreated = false;
 
 function createMatrix() {
-
     let mat = [];
 
-    for(let i = 0; i < 20; i++) {
+    for (let i = 0; i < 20; i++) {
         mat[i] = [];
         
-        for(let j = 0; j < 10; j++) {
+        for (let j = 0; j < 10; j++) {
             mat[i][j] = 0;
         }
     }
@@ -41,74 +39,100 @@ function createMatrix() {
     return mat;
 }
 
-if(!matrixCreated) {
+if (!matrixCreated) {
     matrix = createMatrix();
+}
+
+// CREATE SHADOW MATRIX
+
+let shadowMatrix = [];
+let shadowMatrixCreated = false;
+
+function createShadowMatrix() {
+    let mat = [];
+
+    for (let i = 0; i < 20; i++) {
+        mat[i] = [];
+
+        for (let j = 0; j < 10; j++) {
+            mat[i][j] = 0;
+        }
+    }
+
+    shadowMatrixCreated = true; 
+
+    return mat;
+}
+
+if (!shadowMatrixCreated) {
+    shadowMatrix = createShadowMatrix();    
 }
 
 // UPDATE GRID FROM MATRIX
 
 function updateGrid() {
-
     let itemCounter = 1
     
-    for(let i = 0; i < 20; i++) {
-
-        for(let j = 0; j < 10; j++) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
             let gridItem = document.querySelector(`.grid-item[data-number="${itemCounter}"]`);
             
-            if(matrix[i][j] !== 0) {
+            if (matrix[i][j] !== 0) {
 
                 switch (Math.abs(matrix[i][j])) {
-
                     case 1:
                         gridItem.classList.add('red')
 
-                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white', 'shadow')
                         break;
 
                     case 2:
                         gridItem.classList.add('light-blue')
 
-                        gridItem.classList.remove('blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red')
+                        gridItem.classList.remove('blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red', 'shadow')
                         break;
 
                     case 3:
                         gridItem.classList.add('blue')
 
-                        gridItem.classList.remove('light-blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red')
+                        gridItem.classList.remove('light-blue', 'purple', 'yellow', 'green', 'orange', 'white', 'red', 'shadow')
                         break;
 
                     case 4:
                         gridItem.classList.add('purple')
 
-                        gridItem.classList.remove('light-blue', 'blue', 'yellow', 'green', 'orange', 'white', 'red')
+                        gridItem.classList.remove('light-blue', 'blue', 'yellow', 'green', 'orange', 'white', 'red', 'shadow')
                         break;
 
                     case 5:
                         gridItem.classList.add('yellow')
 
-                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'green', 'orange', 'white', 'red')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'green', 'orange', 'white', 'red', 'shadow')
                         break;
 
                     case 6:
                         gridItem.classList.add('green')
 
-                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'orange', 'white', 'red')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'orange', 'white', 'red', 'shadow')
                         break;
 
                     case 7:
                         gridItem.classList.add('orange')
 
-                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'white', 'red')
+                        gridItem.classList.remove('light-blue', 'blue', 'purple', 'yellow', 'green', 'white', 'red', 'shadow')
                         break;
 
                     default:
                         break;
                   }
-            }
-
-            if(matrix[i][j] === 0) {
+            } else {
                 gridItem.classList.remove('red', 'light-blue', 'blue', 'purple', 'yellow', 'green', 'orange', 'white');
+            
+                if (shadowMatrix[i][j] === 1) {
+                    gridItem.classList.add('shadow');
+                } else {
+                    gridItem.classList.remove('shadow');
+                }
             }
 
             itemCounter++;
@@ -191,7 +215,6 @@ let dim;
 let rotationState;
 
 function pickTetrominos() {
-    
     if (nextPiece === undefined) {
         nextPiece = generateNextPiece();
     }
@@ -245,7 +268,6 @@ function pickTetrominos() {
 }
 
 function generateNextPiece() {
-
     let num = randomNumber();
     return num;
 }
@@ -257,7 +279,6 @@ let dimViewer;
 let colorViewer;
 
 function nextPieceViewer() {
-
     switch (nextPiece) {
         case 1:
             tempViewer = I;
@@ -311,20 +332,17 @@ function nextPieceViewer() {
         gridDiv.removeChild(gridDiv.firstChild);
     }
 
-    if(dimViewer === 2) {
-
+    if (dimViewer === 2) {
         gridDiv.style.gridTemplateColumns = 'repeat(2, 1fr)';
         gridDiv.style.gridTemplateRows = 'repeat(2, 1fr)';
         gridDiv.style.width = '33.3%';
 
-        for(let i = 0; i < dimViewer; i++) {
-
-            for(let j = 0; j < dimViewer; j++) {
-
+        for (let i = 0; i < dimViewer; i++) {
+            for (let j = 0; j < dimViewer; j++) {
                 const elementDiv = document.createElement('div');
                 elementDiv.classList.add('grid-next-item')
                 
-                if(tempViewer[i][j] !== 0) {
+                if (tempViewer[i][j] !== 0) {
                     elementDiv.classList.add(colorViewer)
                 }
 
@@ -333,20 +351,17 @@ function nextPieceViewer() {
         }
     }
 
-    if(dimViewer === 3) {
-
+    if (dimViewer === 3) {
         gridDiv.style.gridTemplateColumns = 'repeat(3, 1fr)';
         gridDiv.style.gridTemplateRows = 'repeat(2, 1fr)';
         gridDiv.style.width = '50%';
 
-        for(let i = 0; i < dimViewer - 1; i++) {
-
-            for(let j = 0; j < dimViewer; j++) {
-
+        for (let i = 0; i < dimViewer - 1; i++) {
+            for (let j = 0; j < dimViewer; j++) {
                 const elementDiv = document.createElement('div');
                 elementDiv.classList.add('grid-next-item')
                 
-                if(tempViewer[i][j] !== 0) {
+                if (tempViewer[i][j] !== 0) {
                     elementDiv.classList.add(colorViewer)
                 }
 
@@ -355,8 +370,7 @@ function nextPieceViewer() {
         }
     }
 
-    if(dimViewer === 4) {
-
+    if (dimViewer === 4) {
         gridDiv.style.gridTemplateColumns = 'repeat(4, 1fr)';
         gridDiv.style.gridTemplateRows = 'repeat(1, 1fr)';
         gridDiv.style.width = '66.6%';
@@ -383,23 +397,19 @@ function nextPieceViewer() {
 let tetrominosPosition; 
 
 function checkSpawn(dimension) {
-
     let starting = Math.floor(5 - (dimension/2));
 
     let row = 0;
 
-    for(let i = 0; i < 2; i++) {
-        
+    for (let i = 0; i < 2; i++) {
         let column = 0;
 
-        for(let j = starting; j < starting + dimension; j++) {
-
-            if(temp[row][column] !== 0 && matrix[i][j] !== 0) {
-
+        for (let j = starting; j < starting + dimension; j++) {
+            if (temp[row][column] !== 0 && matrix[i][j] !== 0) {
                 return false;
             }
 
-            if(temp[row][column] !== 0 && matrix[i][j] === 0) {
+            if (temp[row][column] !== 0 && matrix[i][j] === 0) {
                 matrix[i][j] = temp[row][column];
             }
 
@@ -415,16 +425,13 @@ function checkSpawn(dimension) {
 // MOVE RIGHT TETRONIMOS
 
 function moveRight() {
-
     let canMove = false;
 
-    for(let i = 0; i < 20; i++) {
-        
-        for(let j = 0; j < 10; j++) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
 
-            if(matrix[i][j] > 0) {
-                
-                if(matrix[i][j+1] < 0 || matrix[i][j+1] === undefined) {
+            if (matrix[i][j] > 0) {
+                if (matrix[i][j + 1] < 0 || matrix[i][j + 1] === undefined) {
                     canMove = false;
                     return;
                 }
@@ -434,15 +441,12 @@ function moveRight() {
 
     canMove = true;
 
-    if(canMove) {
-
-        for(let i = 0; i < 20; i++) {
-            
+    if (canMove) {
+        for(let i = 0; i < 20; i++) {  
             for(let j = 9; j >= 0; j--) {
     
-                if(matrix[i][j] > 0) {
-                    
-                    matrix[i][j+1] = matrix[i][j];
+                if(matrix[i][j] > 0) {  
+                    matrix[i][j + 1] = matrix[i][j];
                     matrix[i][j] = 0;
                 }     
             }
@@ -453,40 +457,36 @@ function moveRight() {
 
     updateGrid();
 
+    calculateTetrominoShadow();
+
     return;
 }
 
 // MOVE LEFT TETRONIMOS
 
 function moveLeft() {
-
     let canMove = false;
 
-    for(let i = 0; i < 20; i++) {
-        
-        for(let j = 0; j < 10; j++) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
 
             if(matrix[i][j] > 0) {
-                
-                if(matrix[i][j-1] < 0 || matrix[i][j-1] === undefined) {
+                if(matrix[i][j - 1] < 0 || matrix[i][j - 1] === undefined) {
                     canMove = false;
                     return;
                 }
             }     
         }
     }
+
     canMove = true;
 
-
-    if(canMove) {
-
-        for(let i = 0; i < 20; i++) {
-            
-            for(let j = 0; j < 10; j++) {
+    if (canMove) {
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 10; j++) {
     
-                if(matrix[i][j] > 0) {
-                    
-                    matrix[i][j-1] = matrix[i][j];
+                if(matrix[i][j] > 0) {  
+                    matrix[i][j - 1] = matrix[i][j];
                     matrix[i][j] = 0;
                 }     
             }
@@ -497,6 +497,8 @@ function moveLeft() {
 
     updateGrid();
 
+    calculateTetrominoShadow();
+
     return;
 }
 
@@ -505,8 +507,7 @@ let arrowLeftPressed = false;
 let arrowRightPressed = false;
 let repeatInterval;
 
-// Function to start repeating movement
-function startRepeat(callback) {
+function startRepeat() {
     if (repeatInterval) clearInterval(repeatInterval);
     repeatInterval = setInterval(() => {
         if (arrowLeftPressed) {
@@ -518,23 +519,19 @@ function startRepeat(callback) {
     }, 80);
 }
 
-// Add touch event listeners for left and right touch movements
-const touchArea = document.querySelector('.grid'); // Replace with your touch area element
-let touchStartX = null; // Initialize to null to track the first touch
+const touchArea = document.querySelector('.grid'); 
+let touchStartX = null; 
 
 touchArea.addEventListener('touchstart', (event) => {
-
-    if(!pause) {
+    if (!pause) {
         touchStartX = event.touches[0].clientX;
-        event.preventDefault(); // Prevent scrolling on touch devices
+        event.preventDefault();
     }
 });
 
 touchArea.addEventListener('touchmove', (event) => {
-
-    if(!pause) {
-
-        event.preventDefault(); // Prevent scrolling on touch devices
+    if (!pause) {
+        event.preventDefault();
     
         if (touchStartX !== null) {
             const touchCurrentX = event.touches[0].clientX;
@@ -558,19 +555,16 @@ touchArea.addEventListener('touchmove', (event) => {
 });
 
 touchArea.addEventListener('touchend', () => {
-
-    if(!pause) {
+    if (!pause) {
         arrowLeftPressed = false;
         arrowRightPressed = false;
         clearInterval(repeatInterval);
-        touchStartX = null; // Reset touchStartX
+        touchStartX = null; 
     }
 });
 
 document.addEventListener('keydown', (event) => {
-
-    if(!pause) {
-
+    if (!pause) {
         if (event.key === 'ArrowLeft' || event.key === 'a') {
             if (!arrowLeftPressed) {
                 arrowLeftPressed = true;
@@ -600,7 +594,7 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     if (event.key === 'ArrowLeft' || event.key === 'a') {
 
-        if(!pause) {
+        if (!pause) {
             arrowLeftPressed = false;
             if (arrowRightPressed) {
                 startRepeat(moveRight);
@@ -623,9 +617,7 @@ document.addEventListener('keyup', (event) => {
 // ROTATION TETRONIMOS
 
 function checkRotation() {
-
-    if(tetrominosPosition.col > 10 - dim || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
-
+    if (tetrominosPosition.col > 10 - dim || tetrominosPosition.col < 0 || tetrominosPosition.row >= (20 - dim) || dim === 2) {
         return false;
     }
 
@@ -633,17 +625,14 @@ function checkRotation() {
     let col = tetrominosPosition.col;
 
     for (let i = 0; i < dim; i++) {
-
         col = tetrominosPosition.col;
 
         for (let j = 0; j < dim; j++) {
             
-            if(matrix[row][col] < 0) {
-
+            if (matrix[row][col] < 0) {
                 return false;
             }
             col++;
-
         }
         row++;
     }
@@ -652,9 +641,7 @@ function checkRotation() {
 }
 
 function rotateTetromino() {
-
-    if(checkRotation()) {
-
+    if (checkRotation()) {
         let rotatedPiece = [];
 
         for (let row = 0; row < dim; row++) {
@@ -676,11 +663,9 @@ function rotateTetromino() {
         let col = tetrominosPosition.col;
 
         for (let i = 0; i < dim; i++) {
-
             for (let j = 0; j < dim; j++) {
                 
                 if (matrix[row + i][col + j] >= 0) {  // Skip confirmed pieces
-                    
                     matrix[row + i][col + j] = rotatedPiece[i][j];
                 }
             }
@@ -689,14 +674,10 @@ function rotateTetromino() {
         isRotated = true;
 
         updateGrid();
-        
-        return;
-
-    } else {
-
-        return;
-
+        calculateTetrominoShadow();
     }
+
+    return;
 }
 
 let rotationCooldown = false;
@@ -706,7 +687,7 @@ let touchY;
 document.addEventListener('keydown', (event) => {
     if ((event.key === 'ArrowUp' || event.key === 'w') && !rotationCooldown) {
 
-        if(!pause) {
+        if (!pause) {
             rotateTetromino();
             rotationCooldown = true;
             setTimeout(() => {
@@ -717,27 +698,20 @@ document.addEventListener('keydown', (event) => {
 });
 
 touchArea.addEventListener('touchstart', (event) => {
-
-    if(!pause) {
-        // Record the touch start coordinates
+    if (!pause) {
         touchX = event.touches[0].clientX;
         touchY = event.touches[0].clientY;
     }
 });
 
-// Touchend event listener for mobile touch
 touchArea.addEventListener('touchend', (event) => {
-
-    if(!pause) {
-        // Get the touch end coordinates
+    if (!pause) {
         const touchEndX = event.changedTouches[0].clientX;
         const touchEndY = event.changedTouches[0].clientY;
     
-        // Calculate the distance between start and end points
         const distance = Math.sqrt((touchEndX - touchX) ** 2 + (touchEndY - touchY) ** 2);
     
-        // Check if the touch is a tap (small distance)
-        if (distance < 10 && !rotationCooldown) {  // Adjust the threshold (10 pixels in this example)
+        if (distance < 10 && !rotationCooldown) {  
             rotateTetromino();
             rotationCooldown = true;
             setTimeout(() => {
@@ -753,16 +727,13 @@ let delay = 600;
 let isRotated;
 
 function moveDown() {
-
     let canMove = true;
 
-    for(let i = 19; i >= 0; i--) {
-        
-        for(let j = 0; j < 10; j++) {
+    for (let i = 19; i >= 0; i--) {
+        for (let j = 0; j < 10; j++) {
 
-            if(matrix[i][j] > 0) {
-                
-                if(i === 19 || matrix[i+1][j] < 0 ) {
+            if (matrix[i][j] > 0) {
+                if (i === 19 || matrix[i + 1][j] < 0) {
                     canMove = false;
 
                     confirmPiece();
@@ -774,14 +745,11 @@ function moveDown() {
     }
 
     if (canMove) {
-        
-        for(let i = 18; i >= 0; i--) {
+        for (let i = 18; i >= 0; i--) {
+            for (let j = 0; j < 10; j++) {
     
-            for(let j = 0; j < 10; j++) {
-    
-                if(matrix[i][j] > 0) {
-
-                    matrix[i+1][j] = matrix[i][j];
+                if (matrix[i][j] > 0) {
+                    matrix[i + 1][j] = matrix[i][j];
                     matrix[i][j] = 0;
                 }     
             }
@@ -793,34 +761,27 @@ function moveDown() {
     let row = tetrominosPosition.row - 1;
     let col = tetrominosPosition.col - 1;      
     
-    if(isRotated) {
+    if (isRotated) {
 
         for (let i = 0; i < dim + 2; i++) {
-    
             for (let j = 0; j < dim + 2; j++) {
                 
-                if(i === 0 || i === dim + 1 || j === 0 || j === dim + 1) {
-    
-                    if(col > 0 && col < 10 && row > 0 && row < 20) {
-    
-                        if(matrix[row][col] > 0) {
-
+                if (i === 0 || i === dim + 1 || j === 0 || j === dim + 1) {
+                    if (col > 0 && col < 10 && row > 0 && row < 20) {
+                        if (matrix[row][col] > 0) {
                             matrix[row][col] = 0;
                         }
                     }
                 }
-    
                 col++;
-    
             }
-    
             row++;
         }
 
         isRotated = !isRotated
     }
 
-    if(delay === 30) {
+    if (delay === 30) {
         score += 1 * level;
     }
 
@@ -829,7 +790,6 @@ function moveDown() {
 
         scoreText.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
         scoreTextMin.innerHTML = score.toLocaleString('en-US', { useGrouping: true });
-
     }, delay);
 
     return true;
@@ -840,7 +800,6 @@ function moveDown() {
 let resetDelay = delay;
 let downArrowPressed = false;
 
-// Function to set the delay when the down arrow key is pressed
 function setDelayWhileDownArrowPressed() {
     if (!downArrowPressed) {
         resetDelay = delay;
@@ -849,15 +808,13 @@ function setDelayWhileDownArrowPressed() {
     }
 }
 
-// Function to reset the delay when the down arrow key is released
 function resetDelayAfterRelease() {
     if (downArrowPressed) {
-        delay = resetDelay; // Reset delay to its initial value
+        delay = resetDelay; 
         downArrowPressed = false;
     }
 }
 
-// Add event listeners for the down arrow key
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowDown' || event.key === 's') {
 
@@ -876,34 +833,28 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-let touchStartY = null; // Initialize to null to track the first touch
+let touchStartY = null; 
 
 touchArea.addEventListener('touchstart', (event) => {
-
-    if(!pause) {
+    if (!pause) {
 
         touchStartY = event.touches[0].clientY;
-        event.preventDefault(); // Prevent scrolling on touch devices
+        event.preventDefault();
     }
 });
 
 touchArea.addEventListener('touchmove', (event) => {
-
-    if(!pause) {
-
-        event.preventDefault(); // Prevent scrolling on touch devices
+    if (!pause) {
+        event.preventDefault(); 
     
-        // Check if touch is still within the screen bounds and moved downwards
         if (touchStartY !== null) {
             const touchCurrentY = event.touches[0].clientY;
     
-            // Only update the delay if the finger swipes down (moves towards the bottom of the screen)
             if (touchCurrentY > touchStartY) {
                 const touchDeltaY = touchCurrentY - touchStartY;
     
                 const threshold = 50;
     
-                // If the finger swipes down, maintain the delay at 200
                 if (touchDeltaY > threshold) {
                     setDelayWhileDownArrowPressed();
                 }
@@ -913,24 +864,19 @@ touchArea.addEventListener('touchmove', (event) => {
 });
 
 touchArea.addEventListener('touchend', () => {
-
-    if(!pause) {
-        resetDelayAfterRelease(); // Reset delay when touch is released
-        touchStartY = null; // Reset touchStartY
+    if (!pause) {
+        resetDelayAfterRelease(); 
+        touchStartY = null; 
     }
 });
-
 
 // CONFIRM TETRONIMOS
 
 function confirmPiece() {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
 
-    for(let i = 0; i < 20; i++) {
-        
-        for(let j = 0; j < 10; j++) {
-
-            if(matrix[i][j] > 0) {
-                
+            if (matrix[i][j] > 0) { 
                 matrix[i][j] = -matrix[i][j];
             }     
         }
@@ -942,7 +888,6 @@ function confirmPiece() {
 // CHECK COMPLETED ROWS
 
 function completedRows() {
-
     let canceled = false;
     let canceledNum = 0;
 
@@ -957,8 +902,7 @@ function completedRows() {
 
             let n = (i * 10) + 1;
 
-            for(let j = 0; j < 10; j++) {
-
+            for (let j = 0; j < 10; j++) {
                 let gridItem = document.querySelector(`.grid-item[data-number="${n}"]`);
 
                 gridItem.classList.remove('red')
@@ -985,7 +929,6 @@ function completedRows() {
     const pointsAlert = document.querySelector('.points');
 
     switch (canceledNum) {
-
         case 1:
             score += 40 * (level)
             pointsAlert.innerHTML = '<span>SINGLE</span> +' + (40 * (level))
@@ -1013,12 +956,69 @@ function completedRows() {
 
     linesText.innerHTML = lines;
 
-    if(canceled) {
-
+    if (canceled) {
         pointsAlert.style.bottom = '-40px';
         
         return true;
     }
+}
+
+// CALCULATE TETROMINOS SHADOW
+
+function calculateTetrominoShadow() {
+    // Reset shadow matrix
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
+            shadowMatrix[i][j] = 0;
+        }
+    }
+
+    // Copy the current tetromino to the shadow matrix
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
+            if (matrix[i][j] > 0) {
+                shadowMatrix[i][j] = 1;
+            }
+        }
+    }
+
+    let safetyCounter = 0;
+
+    while (moveShadowDown()) {
+        safetyCounter++;
+        if (safetyCounter > 20) break;  // it prevents infinite loops
+    }
+
+    updateGrid();
+}
+
+function moveShadowDown() {
+    let canMove = true;
+
+    for (let i = 19; i >= 0; i--) {
+        for (let j = 0; j < 10; j++) {
+
+            if (shadowMatrix[i][j] > 0) {
+                if (i === 19 || matrix[i + 1][j] < 0) {
+                    return false;
+                }
+            }     
+        }
+    }
+
+    if (canMove) {
+        for (let i = 18; i >= 0; i--) {
+            for (let j = 0; j < 10; j++) {
+    
+                if (shadowMatrix[i][j] > 0) {
+                    shadowMatrix[i + 1][j] = shadowMatrix[i][j];
+                    shadowMatrix[i][j] = 0;
+                }     
+            }
+        }
+    } 
+
+    return true;
 }
 
 // CHECK SCOREBOARD
@@ -1026,20 +1026,16 @@ function completedRows() {
 let scoreboard;
 
 function checkScoreboard() {
-
     scoreboard = JSON.parse(localStorage.getItem('myScoreboard'));
 
-    if(scoreboard === null) {
-
+    if (scoreboard === null) {
         scoreboard = [5000, 4000, 3000, 2000, 1000];
-
         localStorage.setItem('myScoreboard', JSON.stringify(scoreboard));
     }
 
-    for(let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
 
-        if(score > scoreboard[i]) {
-
+        if (score > scoreboard[i]) { 
             scoreboard.splice(i, 0, score);
             scoreboard.pop();
             break;
@@ -1052,16 +1048,14 @@ function checkScoreboard() {
 // UPDATE SCOREBOARD
 
 function updateScoreboard() {
-
     let num = 1;
 
-    for(let i = 0; i < 5; i++) {
-
+    for (let i = 0; i < 5; i++) {
         const selectedDiv = document.querySelector(`.scoreboard div[data-number="${num}"]`);
 
         selectedDiv.innerHTML = scoreboard[i].toLocaleString('en-US', { useGrouping: true });
 
-        if(scoreboard[i] === score) {
+        if (scoreboard[i] === score) {
 
             selectedDiv.style.backgroundColor = '#5f5f5f';
         }
@@ -1095,12 +1089,11 @@ linesText.innerHTML = lines;
 levelText.innerHTML = level;
 
 function game() {
-    
     // Reset delay for spawned tetronimos
     delay = resetDelay;
 
     // New level
-    if(lines >= 10 * level && level !== 10) {
+    if (lines >= 10 * level && level !== 10) {
 
         level++;
         delay = delay - 50;
@@ -1122,23 +1115,23 @@ function game() {
     // Checks if can spawn
     let canSpawn = checkSpawn(dim);
 
-    if(canSpawn) {
-
+    if (canSpawn) {
         updateGrid();
+
+        calculateTetrominoShadow();
 
         // Move down
         let canMoveDown = true;
         
         function executeIteration() {
-
-            if(gameRestarted) {
+            if (gameRestarted) {
                 gameRestarted = false;
                 return;
             }
             
             if (canMoveDown) {
 
-                if(!pause) {
+                if (!pause) {
                     canMoveDown = moveDown();
                 }
                 
@@ -1147,7 +1140,7 @@ function game() {
 
             } else {
 
-                if(completedRows()) {
+                if (completedRows()) {
 
                     setTimeout(() => {
                         updateGrid();
@@ -1172,11 +1165,8 @@ function game() {
         executeIteration();
 
     } else {
-
         confirmPiece();
-
         checkScoreboard();
-
         updateScoreboard();
 
         const gameOverContainer = document.querySelector('.game-over-container');
@@ -1195,7 +1185,6 @@ function game() {
 let pauseBtn = document.querySelector('.pause');
 
 pauseBtn.addEventListener('click', () => {
-
     pause = true;
 
     const pauseContainer = document.querySelector('.pause-container');
@@ -1209,7 +1198,6 @@ pauseBtn.addEventListener('click', () => {
 let resumeBtn = document.querySelector('.resume');
 
 resumeBtn.addEventListener('click', () => {
-
     pause = false;
 
     const pauseContainer = document.querySelector('.pause-container');
@@ -1243,14 +1231,12 @@ const howToPlayBtn = document.querySelector('.how-to-play');
 const howToPlayContainer = document.querySelector('.how-to-play-container');
 
 howToPlayBtn.addEventListener('click', () => {
-    
     howToPlayContainer.style.display = 'flex';
 })
 
 const doneBtn1 = document.getElementById('done-how-to-play');
 
 doneBtn1.addEventListener('click', () => {
-    
     howToPlayContainer.style.display = 'none';
 })
 
@@ -1260,14 +1246,12 @@ const controlsBtn = document.querySelector('.controls');
 const controlsContainer = document.querySelector('.controls-container');
 
 controlsBtn.addEventListener('click', () => {
-    
     controlsContainer.style.display = 'flex';
 })
 
 const doneBtn2 = document.getElementById('done-controls');
 
 doneBtn2.addEventListener('click', () => {
-    
     controlsContainer.style.display = 'none';
 })
 
@@ -1281,7 +1265,7 @@ const checkDisplayChange = () => {
   const currentDisplay = window.getComputedStyle(blockElement).display;
 
   if (currentDisplay !== previousDisplay) {
-    // Display property has changed
+
     if (currentDisplay === 'flex' && gameStarted === true) {
       
         pause = true;
@@ -1302,7 +1286,6 @@ const checkInterval = setInterval(checkDisplayChange, 100);
 // RESET GAME
 
 function initializeGame(isRestart = false) {
-
     // Reset game state variables to their initial values
     score = 0;
     lines = 0;
@@ -1318,6 +1301,7 @@ function initializeGame(isRestart = false) {
 
     // Reinitialize the matrix and update the grid
     matrix = createMatrix();
+    shadowMatrix = createShadowMatrix();
     updateGrid();
 
     // Update the HTML labels
@@ -1367,8 +1351,8 @@ restartBtn.addEventListener('click', () => initializeGame(true));
 // START GAME
 
 const playBtn = document.querySelector('.play');
-playBtn.addEventListener('click', () => {
 
+playBtn.addEventListener('click', () => {
     gameStarted = true;
 
     const homeContainer = document.querySelector('.home-page');
